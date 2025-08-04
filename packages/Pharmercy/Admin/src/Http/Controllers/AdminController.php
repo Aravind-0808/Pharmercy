@@ -4,6 +4,7 @@ namespace Pharmercy\Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController
 {
@@ -12,6 +13,10 @@ class AdminController
      */
     public function index(): Response
     {
-        return response()->view('admin::welcome');
+        $user = Auth::user();
+        if (!$user|| $user->role_id !== 3) {
+            return abort(401, 'Unauthorized Access');
+        }
+        return response()->view('admin::dashboard');
     }
 }

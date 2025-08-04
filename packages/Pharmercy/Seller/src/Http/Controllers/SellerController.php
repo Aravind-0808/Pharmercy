@@ -4,6 +4,7 @@ namespace Pharmercy\Seller\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class SellerController
 {
@@ -12,6 +13,10 @@ class SellerController
      */
     public function index(): Response
     {
-        return response()->view('seller::welcome');
+        $user = Auth::user();
+        if (!$user|| $user->role_id !== 2) {
+            return abort(401, 'Unauthorized Access');
+        }
+        return response()->view('seller::dashboard');
     }
 }

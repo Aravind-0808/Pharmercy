@@ -28,7 +28,11 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Pharmercy\\Admin\\": "packages/Pharmercy/Admin/src/",
+            "Pharmercy\\Customer\\": "packages/Pharmercy/Customer/src/",
+            "Pharmercy\\Seller\\": "packages/Pharmercy/Seller/src/",
+            "Pharmercy\\Web\\": "packages/Pharmercy/Web/src/"
         }
     },
     "autoload-dev": {
