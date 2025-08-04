@@ -1,47 +1,122 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.main')
+
+@section('title', 'Login')
+
+@section('content')
+    <h2 class="login-title text-center">Welcome Back</h2>
+
+    @if (session('status'))
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ session('status') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" class="form-control @error('email') is-invalid @enderror" name="email"
+                    value="{{ old('email') }}" placeholder="Enter your email" required autocomplete="email" autofocus>
+            </div>
+            @error('email')
+                <div class="invalid-feedback d-block">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" name="password"
+                    placeholder="Enter your password" required autocomplete="current-password" id="passwordInput">
+                <span class="input-group-text toggle-password" id="togglePassword">
+                    <i class="bi bi-eye-slash"></i>
+                </span>
+            </div>
+            @error('password')
+                <div class="invalid-feedback d-block">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
+
+        <div class="mb-3 text-end">
+            <a href="{{ route('password.request') }}" class="forgot-password-link">
+                Forgot Password?
+            </a>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                <label class="form-check-label" for="remember">
+                    Remember me
+                </label>
+            </div>
+        </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <div class="d-grid mb-4">
+            <button type="submit" class="btn btn-main btn-lg">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+            </button>
         </div>
     </form>
-</x-guest-layout>
+
+    <div class="text-center mb-4">
+        <span class="text-muted">Don't have an account?</span>
+        <a href="{{ route('register') }}" class="signup-link ms-1">Sign Up</a>
+    </div>
+
+    <div class="or-separator">OR</div>
+
+    <div class="d-grid gap-2">
+        <button class="btn btn-social" onclick="handleSocialLogin('google')">
+            <img src="https://img.icons8.com/color/20/000000/google-logo.png" class="social-icon" alt="Google" />
+            Sign in with Google
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('apple')">
+            <img src="https://img.icons8.com/ios-filled/20/000000/mac-os.png" class="social-icon" alt="Apple" />
+            Sign in with Apple
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">
+            <img src="https://img.icons8.com/ios-filled/20/000000/facebook-new.png" class="social-icon" alt="Facebook" />
+            Sign in with Facebook
+        </button>
+    </div>
+@endsection
+
+@push('scripts')
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.querySelector('input[name="password"]');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        });
+
+        // Handle social login (placeholder function)
+        function handleSocialLogin(provider) {
+            console.log(`Social login with ${provider} - Implement your OAuth logic here`);
+            // You can implement your OAuth logic here
+            // For example: window.location.href = `/auth/${provider}`;
+        }
+    </script>
+@endpush

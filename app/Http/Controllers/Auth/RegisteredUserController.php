@@ -31,14 +31,18 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role_id' => ['nullable', 'exists:roles,id'], // role_id is optional now
         ]);
+
+        $roleId = $request->role_id ?? 1; // If not provided, default to 1 (user)
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => $roleId,
         ]);
 
         event(new Registered($user));

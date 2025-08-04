@@ -1,52 +1,148 @@
-<x-guest-layout>
+@extends('layouts.main')
+
+@section('title', 'Register')
+
+@section('content')
+    <h2 class="login-title text-center">Create Account</h2>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-person"></i>
+                </span>
+                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
+                    value="{{ old('name') }}" placeholder="Enter your full name" required autocomplete="name" autofocus>
+            </div>
+            @error('name')
+                <div class="invalid-feedback d-block">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-envelope"></i>
+                </span>
+                <input type="email" class="form-control @error('email') is-invalid @enderror" name="email"
+                    value="{{ old('email') }}" placeholder="Enter your email" required autocomplete="username">
+            </div>
+            @error('email')
+                <div class="invalid-feedback d-block">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" name="password"
+                    placeholder="Enter your password" required autocomplete="new-password">
+                <span class="input-group-text toggle-password" id="togglePassword">
+                    <i class="bi bi-eye-slash"></i>
+                </span>
+            </div>
+            @error('password')
+                <div class="invalid-feedback d-block">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-lock-fill"></i>
+                </span>
+                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
+                    name="password_confirmation" placeholder="Confirm your password" required autocomplete="new-password">
+                <span class="input-group-text toggle-password" id="togglePassword">
+                    <i class="bi bi-eye-slash"></i>
+                </span>
+            </div>
+            @error('password_confirmation')
+                <div class="invalid-feedback d-block">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+        <div class="d-grid mb-4">
+            <button type="submit" class="btn btn-main btn-lg">
+                <i class="bi bi-person-plus me-2"></i>Create Account
+            </button>
         </div>
     </form>
-</x-guest-layout>
+
+    <div class="text-center mb-4">
+        <span class="text-muted">Already have an account?</span>
+        <a href="{{ route('login') }}" class="signup-link ms-1">Sign In</a>
+    </div>
+
+    <div class="or-separator">OR</div>
+
+    <div class="d-grid gap-2">
+        <button class="btn btn-social" onclick="handleSocialLogin('google')">
+            <img src="https://img.icons8.com/color/20/000000/google-logo.png" class="social-icon" alt="Google" />
+            Sign up with Google
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('apple')">
+            <img src="https://img.icons8.com/ios-filled/20/000000/mac-os.png" class="social-icon" alt="Apple" />
+            Sign up with Apple
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">
+            <img src="https://img.icons8.com/ios-filled/20/000000/facebook-new.png" class="social-icon" alt="Facebook" />
+            Sign up with Facebook
+        </button>
+    </div>
+@endsection
+
+@push('scripts')
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.querySelector('input[name="password"]');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        });
+
+        // Toggle confirm password visibility
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+            const passwordInput = document.querySelector('input[name="password_confirmation"]');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        });
+
+        // Handle social login (placeholder function)
+        function handleSocialLogin(provider) {
+            console.log(`Social login with ${provider} - Implement your OAuth logic here`);
+            // You can implement your OAuth logic here
+            // For example: window.location.href = `/auth/${provider}`;
+        }
+    </script>
+@endpush

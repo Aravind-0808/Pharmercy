@@ -1,27 +1,69 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+@extends('layouts.main')
+
+@section('title', 'Confirm Password')
+
+@section('content')
+    <a href="{{ url()->previous() }}" class="back-link mb-4 d-inline-block">
+        <i class="bi bi-arrow-left me-2"></i>Back
+    </a>
+    
+    <h2 class="login-title text-center">Confirm Password</h2>
+    
+    <div class="text-center mb-4">
+        <p class="text-muted">
+            This is a secure area of the application. Please confirm your password before continuing.
+        </p>
     </div>
 
     <form method="POST" action="{{ route('password.confirm') }}">
         @csrf
 
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-4">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-lock"></i>
+                </span>
+                <input type="password" 
+                       class="form-control @error('password') is-invalid @enderror" 
+                       name="password" 
+                       placeholder="Enter your password" 
+                       required 
+                       autocomplete="current-password">
+                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <i class="bi bi-eye-slash"></i>
+                </button>
+            </div>
+            @error('password')
+                <div class="invalid-feedback d-block">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
+        <div class="d-grid mb-4">
+            <button type="submit" class="btn btn-main btn-lg">
+                <i class="bi bi-shield-check me-2"></i>Confirm Password
+            </button>
         </div>
     </form>
-</x-guest-layout>
+@endsection
+
+@push('scripts')
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.querySelector('input[name="password"]');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        }
+    });
+</script>
+@endpush
