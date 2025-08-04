@@ -3,10 +3,7 @@
 @section('title', 'Reset Password')
 
 @section('content')
-    <a href="{{ route('login') }}" class="back-link mb-4 d-inline-block">
-        <i class="bi bi-arrow-left me-2"></i>Back to Login
-    </a>
-    
+   
     <h2 class="login-title text-center">Set New Password</h2>
     
     <div class="text-center mb-4">

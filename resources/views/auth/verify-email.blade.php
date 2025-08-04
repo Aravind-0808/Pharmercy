@@ -3,9 +3,6 @@
 @section('title', 'Verify Email')
 
 @section('content')
-    <div class="text-center mb-4">
-        <i class="bi bi-envelope-check text-success" style="font-size: 3rem;"></i>
-    </div>
     
     <h2 class="login-title text-center">Verify Your Email</h2>
     

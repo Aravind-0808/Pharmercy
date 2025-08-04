@@ -28,10 +28,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/')->with('success', 'Logged in successfully');
+        $user = Auth::user();
+
+        if ($user->role_id === 3) {
+            return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully as admin');
+        } elseif ($user->role_id === 2) {
+            return redirect()->route('seller.dashboard')->with('success', 'Logged in successfully as seller');
+        } else {
+            return redirect('/')->with('success', 'Logged in successfully');
+        }
     }
 
-    /**
+    /** 
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse

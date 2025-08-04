@@ -3,9 +3,7 @@
 @section('title', 'Confirm Password')
 
 @section('content')
-    <a href="{{ url()->previous() }}" class="back-link mb-4 d-inline-block">
-        <i class="bi bi-arrow-left me-2"></i>Back
-    </a>
+   
     
     <h2 class="login-title text-center">Confirm Password</h2>
     
