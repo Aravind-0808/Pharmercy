@@ -11,10 +11,10 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <h6 class="card-title">TOTAL EARNING</h6>
-                        <h3 class="card-value">$500.00</h3>
+                        <h3 class="card-value">₹{{ number_format($Wallet_balance, 2) }}</h3>
                     </div>
                     <div class="bg-primary rounded-circle p-3">
-                        <i class="fas fa-dollar-sign text-white"></i>
+                        <i class="fas fa-money-bill-wave text-white"></i>
                     </div>
                 </div>
             </div>
@@ -27,8 +27,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <h6 class="card-title">TOTAL GROWTH</h6>
-                        <h3 class="card-value">$2,324.00</h3>
+                        <h6 class="card-title">TOTAL ORDERS</h6>
+                        <h3 class="card-value">{{ $Total_orders }}</h3>
                     </div>
                     <div class="bg-success rounded-circle p-3">
                         <i class="fas fa-chart-line text-white"></i>
@@ -44,9 +44,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <h6 class="card-title">TOTAL ORDER</h6>
-                        <h3 class="card-value">108</h3>
-                        <p class="text-muted mb-0">Today</p>
+                        <h6 class="card-title">TOTAL PRODUCTS</h6>
+                        <h3 class="card-value">{{ $Total_products }}</h3>
                     </div>
                     <div class="bg-warning rounded-circle p-3">
                         <i class="fas fa-shopping-bag text-white"></i>
@@ -62,8 +61,8 @@
             <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <h6 class="card-title">TOTAL INCOME</h6>
-                        <h3 class="card-value">$203k</h3>
+                        <h6 class="card-title">TOTAL WITHDRAWAL</h6>
+                        <h3 class="card-value">₹203</h3>
                     </div>
                     <div class="bg-info rounded-circle p-3">
                         <i class="fas fa-wallet text-white"></i>

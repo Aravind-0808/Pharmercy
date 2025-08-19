@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
             'role_id' => ['nullable', 'exists:roles,id'], // role_id is optional now
         ]);
 
-        $roleId = $request->role_id ?? 1; // If not provided, default to 1 (user)
+        $roleId = $request->role_id ?? 1; 
 
         $user = User::create([
             'name' => $request->name,
@@ -46,9 +46,6 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
-
-        Auth::login($user);
-
         return redirect(route('login', absolute: false));
     }
 }

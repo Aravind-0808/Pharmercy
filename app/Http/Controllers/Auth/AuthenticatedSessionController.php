@@ -34,8 +34,8 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully as admin');
         } elseif ($user->role_id === 2) {
             return redirect()->route('seller.dashboard')->with('success', 'Logged in successfully as seller');
-        } else {
-            return redirect('/')->with('success', 'Logged in successfully');
+        } elseif ($user->role_id === 1) {
+            return redirect()->route('customer.index')->with('success', 'Logged in successfully');
         }
     }
 
