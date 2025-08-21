@@ -20,6 +20,7 @@ class StoreController
    public function store(Request $request)
 {
     $validated = $request->validate([
+        'user_id' => 'required|exists:users,id',
         'name' => 'required|string|max:255',
         'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'address' => 'required|string|unique:stores,address',
@@ -37,8 +38,6 @@ class StoreController
         $file->move(public_path('assets'), $filename);
         $validated['logo'] = 'assets/' . $filename;
     }
-
-    $validated['user_id'] = auth()->id();
 
     $store = Stores::create($validated);
 

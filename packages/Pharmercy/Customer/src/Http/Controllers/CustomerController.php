@@ -73,7 +73,6 @@ class CustomerController
 
     public function checkout(Request $request, $store_id, $product_id, $quantity)
     {
-        Log::info('Customer checkout initiated', ['store_id' => $store_id, 'product_id' => $product_id]);
         $product = Products::findOrFail($product_id);
         $address = Addresses::where('user_id', auth()->id())->first();
         $WalletAmount = UserWallet::getWalletBalance(auth()->id());

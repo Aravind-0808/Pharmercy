@@ -12,7 +12,8 @@
                     <h5>Total Wallet Balance</h5>
                     <h3 class="text-success">₹ {{ number_format($WalletAmount, 2) }}</h3>
                     <p class="text-muted">You can receive the money in 5 business days</p>
-                    <button class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <button class="btn btn-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#withdrawModal"
+                        @if($Bank_details && $WalletAmount > 0) @else disabled @endif>
                         Withdraw Amount
                     </button>
                 </div>
@@ -60,22 +61,29 @@
                 </tr>
             </thead>
             <tbody id="transactionTableBody">
-                @foreach($walletTransactions as $transaction)
-                    <tr data-id="{{ $transaction->id }}">
-                        <td>{{ $transaction->id }}</td>
-                        <td>{{ $transaction->transaction_id ? $transaction->transaction_id : 'Null' }}</td>
-                        <td>{{ number_format($transaction->amount, 2) }}</td>
-                        <td>{{ ucfirst($transaction->type) }}</td>
-                        <td>{{ $transaction->created_at->format('Y-m-d H:i') }}</td>
-                        <td>
-                            <form action="/" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                        </td>
+                @if (count($walletTransactions) > 0)
+                    @foreach($walletTransactions as $transaction)
+                        <tr data-id="{{ $transaction->id }}">
+                            <td>{{ $transaction->id }}</td>
+                            <td>{{ $transaction->transaction_id ? $transaction->transaction_id : 'Null' }}</td>
+                            <td>{{ number_format($transaction->amount, 2) }}</td>
+                            <td>{{ ucfirst($transaction->type) }}</td>
+                            <td>{{ $transaction->created_at->format('Y-m-d H:i') }}</td>
+                            <td>
+                                <form action="/" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
+                @if (count($walletTransactions) === 0)
+                    <tr>
+                        <td colspan="6" class="text-center">No transactions found.</td>
                     </tr>
-                @endforeach
+                @endif
             </tbody>
         </table>
     </div>
@@ -83,7 +91,9 @@
     <!-- Bank Details Modal -->
     <div class="modal fade" id="bankDetailsModal" tabindex="-1" aria-labelledby="bankDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form class="modal-content"  action="{{ $Bank_details ? route('seller.update.bank.details', $storeId) : route('seller.add.bank.details') }}" " method="POST">
+            <form class="modal-content"
+                action="{{ $Bank_details ? route('seller.update.bank.details', $storeId) : route('seller.add.bank.details') }}" " method="
+                POST">
                 @csrf
                 @if($Bank_details)
                     @method('PUT')
@@ -122,8 +132,8 @@
                     </div>
                     <div class="mb-3">
                         <label>UPI</label>
-                        <input type="text" name="upi_id" class="form-control"
-                            value="{{ $Bank_details->upi_id ?? '' }}" required>
+                        <input type="text" name="upi_id" class="form-control" value="{{ $Bank_details->upi_id ?? '' }}"
+                            required>
                     </div>
 
                 </div>
@@ -148,8 +158,9 @@
                     <div class="mb-3">
                         <label>Enter Amount</label>
                         <input type="number" name="amount" class="form-control" placeholder="Enter amount" required>
-                            <input type="hidden" name="bank_details_id" class="form-control" value="{{ $Bank_details->id }}" required>
-                        </div>
+                        <input type="hidden" name="bank_details_id" class="form-control"
+                            value="{{ $Bank_details->id ?? '' }}" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

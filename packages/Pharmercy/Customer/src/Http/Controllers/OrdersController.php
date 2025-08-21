@@ -26,6 +26,8 @@ class OrdersController
 
     public function store(Request $request)
     {
+        Log::info('Order placement initiated', ['request' => $request->all()]);
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'store_id' => 'required|exists:stores,id',
@@ -33,18 +35,22 @@ class OrdersController
             'quantity' => 'required|integer|min:1',
             'address_id' => 'required|exists:addresses,id',
             'total_amount' => 'required|numeric',
-            'ordered_at' => 'required|date',
-            'status' => 'required|string|max:255',
+            'payment_type' => 'required|integer|in:1,2,3',
+            'ordered_at' => 'nullable|date',
+            'status' => 'nullable|string|max:255',
         ]);
 
         $validated['ordered_at'] = $validated['ordered_at'] ?? now();
+        $validated['status'] = $validated['status'] ?? 'pending';
 
         $order = Orders::create($validated);
 
-        // Redirect to Razorpay payment page
-        if ($request->input('type') === 'wallet') {
+        //  Wallet payment
+        if ($validated['payment_type'] == 2) {
+            Log::info('Processing order with wallet payment', ['order_id' => $order->id]);
+
             $orderAmount = $order->total_amount;
-            $SellerAmount =  $orderAmount - ($orderAmount * 0.3); 
+            $sellerAmount = $orderAmount - ($orderAmount * 0.3);
 
             UserWallet::create([
                 'user_id' => $order->user_id,
@@ -55,40 +61,67 @@ class OrdersController
 
             Wallet::create([
                 'store_id' => $order->store_id,
-                'amount' => $SellerAmount,
+                'amount' => $sellerAmount,
                 'type' => 'credit',
             ]);
-            Orders::where('id', $order->id)->update(['status' => 'paid']);
+
+            $order->update(['status' => 'paid']);
 
             return redirect()->back()->with('success', 'Order placed successfully using wallet.');
         }
-        else{
+
+        //  Razorpay payment
+        if ($validated['payment_type'] == 1) {
+            Log::info('Processing order with Razorpay payment', ['order_id' => $order->id]);
             return redirect()->route('payment.initiate', ['order_id' => $order->id]);
+        }
+
+        //  COD (Cash on Delivery)
+        if ($validated['payment_type'] == 3) {
+            Log::info('Processing order with COD', ['order_id' => $order->id]);
+
+            $order->update(['status' => 'processing']);
+
+            return redirect()->back()->with('success', 'Order placed successfully. Pay on delivery.');
+        }
+
+        // Fallback
+        return redirect()->back()->with('error', 'Invalid payment type.');
+    }
+
+
+    public function cancelcodOrder(Request $request, $id)
+    {
+        Log::info('Cancelling COD order', ['order_id' => $id]);
+        $order = Orders::findOrFail($id);
+        if ($order->payment_type == 3) {
+            $order->update(['status' => 'cancelled']);
+            return redirect()->back()->with('success', 'Order has been cancelled successfully.');
         }
     }
 
     public function cancelOrder(Request $request, $id)
     {
         $order = Orders::findOrFail($id);
-        $order->update(['status' => 'canceled']);
+        $order->update(['status' => 'cancelled']);
 
         $orderAmount = $order->total_amount;
-        $SellerAmount =  $orderAmount - ($orderAmount * 0.3); // Assuming 30% is the platform fee
+        $SellerAmount = $orderAmount - ($orderAmount * 0.3); // Assuming 30% is the platform fee
 
-            Wallet::create([
-                'store_id' => $order->store_id,
-                'amount' => $SellerAmount,
-                'type' => 'debit',
-            ]);
+        Wallet::create([
+            'store_id' => $order->store_id,
+            'amount' => $SellerAmount,
+            'type' => 'debit',
+        ]);
 
-            UserWallet::create([
-                'user_id' => $order->user_id,
-                'order_id' => $order->id,
-                'amount' => $orderAmount,
-                'type' => 'credit',
-            ]);
+        UserWallet::create([
+            'user_id' => $order->user_id,
+            'order_id' => $order->id,
+            'amount' => $orderAmount,
+            'type' => 'credit',
+        ]);
 
-        return redirect()->back()->with('success', 'Order has been canceled successfully.');
+        return redirect()->back()->with('success', 'Order has been cancelled successfully.');
     }
 
 }

@@ -21,32 +21,39 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($products as $product)
-                    <tr data-id="{{ $product->id }}">
-                        <td>{{ $product->id }}</td>
-                        <td>{{ $product->store_id }}</td>
-                        <td>{{ $product->name }}</td>
-                        <td>
-                            @if($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" class="img-thumbnail"
-                                    style="width:60px;height:60px;">
-                            @else
-                                <span class="text-muted">No Image</span>
-                            @endif
-                        </td>
-                        <td>{{ $product->description }}</td>
-                        <td>{{ $product->original_price }}</td>
-                        <td>{{ $product->discount }}%</td>
-                        <td>{{ $product->selling_price }}</td>
-                        <td>{{ $product->stock }}</td>
-                        <td>{{ $product->is_active ? 'Active' : 'Inactive' }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info editProductBtn" data-toggle="modal"
-                                data-target="#editProductModal">Edit</button>
-                            <button class="btn btn-sm btn-danger deleteProductBtn">Delete</button>
-                        </td>
+                @if (count($products) > 0)
+                    @foreach($products as $product)
+                        <tr data-id="{{ $product->id }}">
+                            <td>{{ $product->id }}</td>
+                            <td>{{ $product->store_id }}</td>
+                            <td>{{ $product->name }}</td>
+                            <td>
+                                @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-thumbnail"
+                                        style="width:60px;height:60px;">
+                                @else
+                                    <span class="text-muted">No Image</span>
+                                @endif
+                            </td>
+                            <td>{{ $product->description }}</td>
+                            <td>{{ $product->original_price }}</td>
+                            <td>{{ $product->discount }}%</td>
+                            <td>{{ $product->selling_price }}</td>
+                            <td>{{ $product->stock }}</td>
+                            <td>{{ $product->is_active ? 'Active' : 'Inactive' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info editProductBtn" data-toggle="modal"
+                                    data-target="#editProductModal">Edit</button>
+                                <button class="btn btn-sm btn-danger deleteProductBtn">Delete</button>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
+                @if (count($products) == 0)
+                    <tr>
+                        <td colspan="11" class="text-center">No products found.</td>
                     </tr>
-                @endforeach
+                @endif
             </tbody>
         </table>
     </div>
@@ -73,8 +80,9 @@
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea class="form-control" name="description"></textarea>
+                            <textarea class="form-control" name="description" id="description"></textarea>
                         </div>
+
                         <div class="form-group">
                             <label>Original Price</label>
                             <input type="number" step="0.01" class="form-control" name="original_price" required>
@@ -123,6 +131,7 @@
                             <label>Description</label>
                             <textarea class="form-control" name="description" id="editProductDescription"></textarea>
                         </div>
+
                         <div class="form-group">
                             <label>Original Price</label>
                             <input type="number" step="0.01" class="form-control" name="original_price"
@@ -153,13 +162,46 @@
         </div>
     </div>
 @endsection
-
 @section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- CKEditor 5 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+
     <script>
+        let addEditor, editEditor;
+
         $(function () {
-            // Add Product
+            // ✅ Initialize CKEditor for Add Product
+            ClassicEditor
+                .create(document.querySelector('#description'))
+                .then(editor => {
+                    addEditor = editor;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // ✅ Initialize CKEditor for Edit Product
+            ClassicEditor
+                .create(document.querySelector('#editProductDescription'))
+                .then(editor => {
+                    editEditor = editor;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // ✅ Add Product
             $('#addProductForm').submit(function (e) {
                 e.preventDefault();
+
+                // Get CKEditor data into textarea before submit
+                if (addEditor) {
+                    $('#description').val(addEditor.getData());
+                }
+
                 var formData = new FormData(this);
                 $.ajax({
                     url: '/seller/products',
@@ -173,22 +215,32 @@
                 });
             });
 
-            // Edit Product - populate modal
+            // ✅ Edit Product - populate modal
             $('.editProductBtn').click(function () {
                 var row = $(this).closest('tr');
                 $('#editProductId').val(row.data('id'));
                 $('#editProductStoreId').val(row.find('td:eq(1)').text());
                 $('#editProductName').val(row.find('td:eq(2)').text());
-                $('#editProductDescription').val(row.find('td:eq(4)').text());
                 $('#editProductOriginalPrice').val(row.find('td:eq(5)').text());
-                $('#editProductDiscountedPrice').val(row.find('td:eq(6)').text());
-                $('#editProductStock').val(row.find('td:eq(7)').text());
-                $('#editProductActive').val(row.find('td:eq(8)').text() === 'Active' ? '1' : '0');
+                $('#editProductDiscount').val(row.find('td:eq(6)').text().replace('%', ''));
+                $('#editProductStock').val(row.find('td:eq(8)').text());
+                $('#editProductActive').val(row.find('td:eq(9)').text() === 'Active' ? '1' : '0');
+
+                // Set description into CKEditor
+                if (editEditor) {
+                    editEditor.setData(row.find('td:eq(4)').html());
+                }
             });
 
-            // Update Product
+            // ✅ Update Product
             $('#editProductForm').submit(function (e) {
                 e.preventDefault();
+
+                // Get CKEditor data into textarea before submit
+                if (editEditor) {
+                    $('#editProductDescription').val(editEditor.getData());
+                }
+
                 var id = $('#editProductId').val();
                 var formData = new FormData(this);
                 $.ajax({
@@ -203,7 +255,7 @@
                 });
             });
 
-            // Delete Product
+            // ✅ Delete Product
             $('.deleteProductBtn').click(function () {
                 if (confirm('Are you sure you want to delete this product?')) {
                     var id = $(this).closest('tr').data('id');

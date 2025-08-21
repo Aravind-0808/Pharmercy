@@ -125,7 +125,7 @@
                         <div class="fw-bold h5 mb-1">{{ $product->name }}</div>
                         <div class="text-muted mb-2">{{ $product->description }}</div>
                         <div class="fw-bold h5 mb-3">Quantity: {{ $quantity }}</div>
-                        <div class="h4 text-success mb-0">₹{{ $product->selling_price * $quantity }}</div>
+                        <div class="h4 text-success mb-0">₹{{ (float) $product->selling_price * (int) $quantity }}</div>
                     </div>
 
                     <!-- Payment Options -->
@@ -155,6 +155,18 @@
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Cash on Delivery Option -->
+                        <div class="p-3 border rounded bg-light mb-3">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted d-block">Cash on Delivery</small>
+                                </div>
+                                <button type="button" class="btn btn-warning px-4 pay-btn" data-method="cod">
+                                    Cash on Delivery
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -163,37 +175,18 @@
     </div>
 </div>
 
-<!-- Order Modal (Razorpay) -->
+
+<!-- Razorpay Modal -->
 <div class="modal fade" id="orderConfirmModal" tabindex="-1" aria-labelledby="orderConfirmLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-light">
-                <h5 class="modal-title fw-bold" id="orderConfirmLabel">Confirm Your Order</h5>
+                <h5 class="modal-title fw-bold" id="orderConfirmLabel">Pay with Razorpay</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-body">
-                <div class="text-center mb-3">
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="rounded"
-                        style="width: 100%; max-height: 250px; object-fit: cover;">
-                </div>
-                <div class="fw-bold h5 mb-1">{{ $product->name }}</div>
-                <div class="text-muted mb-2">{{ $product->description }}</div>
-
-                <!-- Address Section -->
-                @if($address)
-                <h6 class="fw-bold mb-2">Shipping Address</h6>
-                <p class="mb-0">
-                    {{ $address->first_name }} {{ $address->last_name }}<br>
-                    {{ $address->door_no }}, {{ $address->street }}<br>
-                    {{ $address->city }}, {{ $address->district }}<br>
-                    {{ $address->state }}, {{ $address->country }} - {{ $address->zip }}<br>
-                    Phone: {{ $address->phone }}
-                </p>
-                @endif
-            </div>
-
-            <div class="modal-footer">
+            <div class="modal-body text-center">
+                <p>You have selected <strong>Razorpay</strong>. Please confirm your order.</p>
+                <p class="text-muted">Total amount to pay: ₹{{ (float) $product->selling_price * (int) $quantity }}</p>
                 <form method="POST" action="{{ route('customer.checkout.placeOrder') }}">
                     @csrf
                     <input type="hidden" name="address_id" value="{{ $address->id ?? '' }}">
@@ -201,11 +194,11 @@
                     <input type="hidden" name="store_id" value="{{ $product->store_id }}">
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <input type="hidden" name="quantity" value="{{ $quantity }}">
-                    <input type="hidden" name="total_amount" value="{{ $product->selling_price * $quantity }}">
+                    <input type="hidden" name="total_amount" value="{{ (float) $product->selling_price * (int) $quantity }}">
                     <input type="hidden" name="status" value="pending">
+                    <input type="hidden" name="payment_type" value="1">
                     <input type="hidden" name="ordered_at" value="{{ now() }}">
-                    <input type="hidden" name="payment_method" value="razorpay">
-                    <button type="submit" class="btn btn-primary btn-lg">Continue to Payment</button>
+                    <button type="submit" class="btn btn-primary btn-lg mt-3">Continue to Payment</button>
                 </form>
             </div>
         </div>
@@ -223,9 +216,9 @@
             <div class="modal-body text-center">
                 <p>Your available wallet balance is:</p>
                 <h3 class="text-success" id="walletBalance">₹{{ $WalletAmount ?? 0 }}</h3>
-                <p class="text-muted">Total amount to pay: ₹{{ $product->selling_price * $quantity }}</p>
+                <p class="text-muted">Total amount to pay: ₹{{ (float) $product->selling_price * (int) $quantity }}</p>
 
-                @if($WalletAmount >= $product->selling_price * $quantity)
+                @if($WalletAmount >= ((float) $product->selling_price * (int) $quantity))
                     <form method="POST" action="{{ route('customer.checkout.placeOrder') }}">
                         @csrf
                         <input type="hidden" name="address_id" value="{{ $address->id ?? '' }}">
@@ -233,11 +226,10 @@
                         <input type="hidden" name="store_id" value="{{ $product->store_id }}">
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                         <input type="hidden" name="quantity" value="{{ $quantity }}">
-                        <input type="hidden" name="total_amount" value="{{ $product->selling_price * $quantity }}">
+                        <input type="hidden" name="total_amount" value="{{ (float) $product->selling_price * (int) $quantity }}">
                         <input type="hidden" name="status" value="pending">
-                        <input type="hidden" name="payment_method" value="wallet">
+                        <input type="hidden" name="payment_type" value="wallet">
                         <input type="hidden" name="ordered_at" value="{{ now() }}">
-                        <input type="hidden" name="type" value="wallet">
                         <button type="submit" class="btn btn-primary btn-lg mt-3">Pay Now</button>
                     </form>
                 @else
@@ -245,6 +237,35 @@
                         Insufficient wallet balance. Please add funds or choose another payment method.
                     </div>
                 @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cash on Delivery Modal -->
+<div class="modal fade" id="codModal" tabindex="-1" aria-labelledby="codModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" id="codModalLabel">Cash on Delivery</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>You have selected <strong>Cash on Delivery</strong>. Please confirm your order.</p>
+                <p class="text-muted">Total amount to pay: ₹{{ (float) $product->selling_price * (int) $quantity }}</p>
+                <form method="POST" action="{{ route('customer.checkout.placeOrder') }}">
+                    @csrf
+                    <input type="hidden" name="address_id" value="{{ $address->id ?? '' }}">
+                    <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+                    <input type="hidden" name="store_id" value="{{ $product->store_id }}">
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="quantity" value="{{ $quantity }}">
+                    <input type="hidden" name="total_amount" value="{{ (float) $product->selling_price * (int) $quantity }}">
+                    <input type="hidden" name="status" value="pending">
+                    <input type="hidden" name="payment_type" value="3">
+                    <input type="hidden" name="ordered_at" value="{{ now() }}">
+                    <button type="submit" class="btn btn-warning btn-lg mt-3">Confirm Order</button>
+                </form>
             </div>
         </div>
     </div>
@@ -272,6 +293,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if(method === 'wallet') {
                 const walletModal = new bootstrap.Modal(document.getElementById('walletModal'));
                 walletModal.show();
+            }
+            if(method === 'cod') {
+                const codModal = new bootstrap.Modal(document.getElementById('codModal'));
+                codModal.show();
             }
         });
     });

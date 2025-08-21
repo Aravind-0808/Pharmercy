@@ -19,31 +19,35 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($bankDetails as $bank)
-                <tr data-id="{{ $bank->id }}">
-                    <td>{{ $bank->id }}</td>
-                    <td>{{ $bank->store_id }}</td>
-                    <td>{{ $bank->account_holder_name }}</td>
-                    <td>{{ $bank->bank_name }}</td>
-                    <td>{{ $bank->account_number }}</td>
-                    <td>{{ $bank->ifsc_code }}</td>
-                    <td>{{ $bank->branch_name ?? '-' }}</td>
-                    <td>{{ $bank->upi_id ?? '-' }}</td>
-                    <td>
-                        <!-- Update button triggers modal -->
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateBankModal{{ $bank->id }}">
-                            Update
-                        </button>
-
-                        <!-- Delete Form -->
-                        <form action="/" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
+           @if (count($bankDetails) > 0)
+               @foreach($bankDetails as $detail)
+                   <tr data-id="{{ $detail->id }}">
+                       <td>{{ $detail->id }}</td>
+                       <td>{{ $detail->store_id }}</td>
+                       <td>{{ $detail->account_holder }}</td>
+                       <td>{{ $detail->bank_name }}</td>
+                       <td>{{ $detail->account_number }}</td>
+                       <td>{{ $detail->ifsc_code }}</td>
+                       <td>{{ $detail->branch }}</td>
+                       <td>{{ $detail->upi_id }}</td>
+                       <td>
+                           <form action="{{ route('admin.bank-details.destroy', $detail->id) }}" method="POST" style="display:inline-block;">
+                               @csrf
+                               @method('DELETE')
+                               <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                           </form>
+                       </td>
+                   </tr>
+               @endforeach
+           @endif
+           @if (count($bankDetails) === 0)
+               <tfoot>
+                   <tr>
+                       <td colspan="9" class="text-center">No bank details found.</td>
+                   </tr>
+               </tfoot>
+           
+           @endif
         </tbody>
     </table>
 </div>

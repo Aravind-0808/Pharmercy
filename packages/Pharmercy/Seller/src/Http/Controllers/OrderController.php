@@ -9,8 +9,8 @@ use Illuminate\Http\Response;
 use Log;
 use Pharmercy\Customer\Models\Orders;
 use Pharmercy\Seller\Models\Stores;
-use Pharmercy\Seller\Models\Products;
-use Pharmercy\Customer\Models\Addresses;
+use Pharmercy\Seller\Models\Wallet;
+
 
 class OrderController
 {
@@ -27,5 +27,23 @@ class OrderController
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         return view('Seller::order-table', compact('orders'));
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        $order = Orders::findOrFail($id);
+        $order->status = $request->status;
+        $order->save();
+
+        if ($order->payment_type == 3 && $request->status === 'delivered') {
+            Log::info('Processing order with COD', ['order_id' => $order->id]);
+            Wallet::create([
+                'store_id' => $order->store_id,
+                'amount' => $order->total_amount - ($order->total_amount * 0.7),
+                'type' => 'debit',
+            ]);
+
+        }
+
+        return redirect()->back()->with('success', 'Order status updated successfully.');
     }
 }

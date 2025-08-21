@@ -16,6 +16,7 @@
             </tr>
         </thead>
         <tbody id="withdrawalTableBody">
+           @if (count($withdrawals) > 0)
             @foreach($withdrawals as $withdrawal)
                 <tr data-id="{{ $withdrawal->id }}">
                     <td>{{ $withdrawal->id }}</td>
@@ -42,6 +43,15 @@
                     </td>
                 </tr>
             @endforeach
+           @endif
+           @if (count($withdrawals) == 0)
+               <tfoot>
+                   <tr>
+                       <td colspan="6" class="text-center">No withdrawal requests found.</td>
+                   </tr>
+               </tfoot>
+           
+           @endif
         </tbody>
     </table>
 </div>

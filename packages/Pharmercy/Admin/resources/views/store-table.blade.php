@@ -8,6 +8,7 @@
             <thead class="thead-light">
                 <tr>
                     <th>ID</th>
+                    <th>User ID</th>
                     <th>Name</th>
                     <th>Logo</th>
                     <th>Address</th>
@@ -21,14 +22,15 @@
                 </tr>
             </thead>
             <tbody id="storeTableBody">
+               @if (count($stores) > 0)
                 @foreach($stores as $store)
                     <tr data-id="{{ $store->id }}">
                         <td>{{ $store->id }}</td>
+                        <td>{{ $store->user_id }}</td>
                         <td>{{ $store->name }}</td>
                         <td>
                             @if($store->logo)
-                                <img src="{{ asset('' . $store->logo) }}" class="img-thumbnail"
-                                    style="width:40px;height:40px;">
+                                <img src="{{ asset('' . $store->logo) }}" class="img-thumbnail" style="width:40px;height:40px;">
                             @else
                                 <span class="text-muted">No Logo</span>
                             @endif
@@ -47,6 +49,13 @@
                         </td>
                     </tr>
                 @endforeach
+               @endif
+               @if (count($stores) == 0)
+                    <tr>
+                        <td colspan="12" class="text-center">No stores found.</td>
+                    </tr>
+               
+               @endif
             </tbody>
         </table>
     </div>
@@ -62,9 +71,19 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="addStoreForm" method="POST" action="{{ route('seller.stores.store') }}" enctype="multipart/form-data">
+                <form id="addStoreForm" method="POST" action="{{ route('seller.stores.store') }}"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
+                        <div class="form-group">
+                            <label>User ID</label>
+                            <select name="user_id" class="form-control" required>
+                                <option value="">Select User</option>
+                                @foreach($userData as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label>Name</label>
                             <input type="text" class="form-control" name="name" required>
@@ -131,6 +150,11 @@
                 <form id="editStoreForm">
                     <div class="modal-body">
                         <input type="hidden" name="id" id="editStoreId">
+
+                        <div class="form-group">
+                            <label>User ID</label>
+                            <input type="text" class="form-control" name="user_id" id="editStoreUserId" required>
+                        </div>
                         <div class="form-group">
                             <label>Name</label>
                             <input type="text" class="form-control" name="name" id="editStoreName" required>

@@ -2,6 +2,7 @@
 
 namespace Pharmercy\Admin\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,7 @@ class AdminController
     public function index(): Response
     {
         $user = Auth::user();
+
         if (!$user || $user->role_id !== 3) {
             return abort(401, 'Unauthorized Access');
         }
@@ -33,11 +35,12 @@ class AdminController
     public function storeTable(): Response
     {
         $user = Auth::user();
+        $userData = User::where('role_id', 2)->get();
         $stores = Stores::all();
         if (!$user || $user->role_id !== 3) {
             return abort(401, 'Unauthorized Access');
         }
-        return response()->view('admin::store-table', compact('stores'));
+        return response()->view('admin::store-table', compact('stores', 'userData'));
     }
 
     public function productTable(): Response
@@ -90,10 +93,16 @@ class AdminController
 
         // Get each store with its total wallet amount
         $storeWallets = Wallet::select('store_id')
-            ->selectRaw('SUM(amount) as total_amount')
+            ->selectRaw("
+        SUM(CASE WHEN type = 'credit' THEN amount ELSE 0 END) as total_credit,
+        SUM(CASE WHEN type = 'debit' THEN amount ELSE 0 END) as total_debit,
+        SUM(CASE WHEN type = 'credit' THEN amount ELSE 0 END) - 
+        SUM(CASE WHEN type = 'debit' THEN amount ELSE 0 END) as total_balance
+    ")
             ->with('store')
             ->groupBy('store_id')
             ->get();
+
 
         return response()->view('admin::store-wallet-amount', compact('storeWallets'));
     }

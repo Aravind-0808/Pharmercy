@@ -14,9 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
             $table->string('name')->required();
-            $table->string('image')->nullable();
-            $table->string('description')->required();
+            $table->string('image')->required();
+            $table->longText('description')->required();
             $table->decimal('original_price', 10, 2)->required();
+            $table->decimal('selling_price', 10, 2)->required();
             $table->integer('discount')->default(0);
             $table->integer('stock')->default(0);
             $table->boolean('is_active')->default(true);

@@ -19,6 +19,7 @@ class Orders extends Model
         'quantity',
         'address_id',
         'total_amount',
+        'payment_type',
         'ordered_at',
         'status'
     ];

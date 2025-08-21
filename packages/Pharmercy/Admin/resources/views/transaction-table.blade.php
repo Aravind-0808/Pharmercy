@@ -16,6 +16,7 @@
             </tr>
         </thead>
         <tbody id="transactionTableBody">
+           @if (count($transactions) > 0)
             @foreach($transactions as $transaction)
                 <tr data-id="{{ $transaction->id }}">
                     <td>{{ $transaction->id }}</td>
@@ -29,6 +30,14 @@
                     </td>
                 </tr>
             @endforeach
+           @endif
+           @if (count($transactions) == 0)
+               <tfoot>
+                   <tr>
+                       <td colspan="7" class="text-center">No transactions found.</td>
+                   </tr>
+               </tfoot>
+           @endif
         </tbody>
     </table>
 </div>

@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('address_id')->constrained()->onDelete('cascade');
             $table->decimal('total_amount', 10, 2);
+            $table->integer('quantity')->default(1);
+            $table->foreignId('payment_type')->constrained('payment_type')->onDelete('cascade');
             $table->timestamp('ordered_at')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();

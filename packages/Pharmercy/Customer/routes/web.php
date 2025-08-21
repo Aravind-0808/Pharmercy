@@ -18,6 +18,7 @@ Route::post('/checkout/place-order', [OrdersController::class, 'store'])->name('
 Route::get('customer/orders', [OrdersController::class, 'index'])->name('customer.orders')->middleware('auth');
 Route::post("/customer/cart-order", [CartController::class, 'cartorder'])->name('customer.cart-order')->middleware('auth'); 
 Route::post('customer/orders-cancel/{id}', [OrdersController::class, 'cancelOrder'])->name('customer.orders.cancel')->middleware('auth');
+Route::post('customer/orders-cancel-cod/{id}', [OrdersController::class, 'cancelcodOrder'])->name('customer.orders.cancel.cod')->middleware('auth');
 
 Route::get('customer/profile', [ProfileController::class, 'index'])->name('customer.profile')->middleware('auth');
 Route::put('customer/update-address/{id}', [AddressesController::class, 'update'])->name('customer.update-address')->middleware('auth');

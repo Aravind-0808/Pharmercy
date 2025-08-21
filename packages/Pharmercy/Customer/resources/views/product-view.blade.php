@@ -25,7 +25,8 @@
                         <div class="col-lg-6 p-4 d-flex flex-column justify-content-between">
                             <div>
                                 <h1 class="fw-bold mb-3" style="font-size: 1.5rem;">{{ $product->name }}</h1>
-                                <p class="text-muted mb-4" style="font-size: 0.95rem;">{{ $product->description }}</p>
+                                <div class="text-muted mb-4" style="font-size: 0.95rem;">{!! $product->description !!}</div>
+
                             </div>
                             <div class="mb-5">
                                 <div class="d-flex align-items-center mb-2">
@@ -233,7 +234,7 @@
             plusBtn.addEventListener('click', () => {
                 let currentValue = parseInt(quantityInput.value) || 1;
                 quantityInput.value = currentValue + 1;
-                
+
                 updateQuantity();
             });
 

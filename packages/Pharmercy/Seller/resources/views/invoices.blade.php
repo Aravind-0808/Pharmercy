@@ -55,7 +55,7 @@
             <tr>
                 <th>Product ID</th>
                 <th>Product Name</th>
-                <th>Description</th>
+                <th>Mode of Payment</th>
                 <th>Original Price</th>
                 <th>Discount (%)</th>
                 <th>Quantity</th>
@@ -66,7 +66,15 @@
             <tr>
                 <td>{{ $order->product->id }}</td>
                 <td>{{ $order->product->name }}</td>
-                <td>{{ $order->product->description }}</td>
+                <td>
+                    @if($order->payment_type == 1)
+                        <span class="badge bg-primary">Razorpay</span>
+                    @elseif($order->payment_type == 2)
+                        <span class="badge bg-success">Wallet</span>
+                    @elseif($order->payment_type == 3)
+                        <span class="badge bg-warning">COD</span>
+                    @endif
+                </td>
                 <td>INR {{ number_format($order->product->original_price, 2) }}</td>
                 <td>{{ $order->product->discount }}%</td>
                 <td>{{ $order->quantity }}</td>

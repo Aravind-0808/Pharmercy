@@ -15,6 +15,8 @@ Route::get('/seller/product-table', [ProductsController::class, 'index'])->name(
 Route::get('/seller/wallet-table', [WalletController::class, 'index'])->name('seller.wallet.table')->middleware('auth');
 Route::get('/seller/order-table', [OrderController::class, 'index'])->name('seller.order.table')->middleware('auth');
 Route::get('/seller/generate-invoice/{orderId}', [SellerController::class, 'generate'])->name('seller.generate.invoice')->middleware('auth');
+Route::put('/seller/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('seller.update.order.status');
+
 
 Route::post('/seller/withdraw', [WalletController::class, 'withdraw'])->name('seller.withdraw')->middleware('auth');
 Route::get('/seller/withdrawal-request-table', [WalletController::class, 'getWithdrawalRequests'])->name('seller.withdrawal.request')->middleware('auth');
@@ -24,7 +26,7 @@ Route::put("/seller/update-bank-details/{id}", [StoreBankDetailsController::clas
 
 
 // Store CRUD routes
-Route::middleware('auth')->prefix('sealler')->group(function () {
+Route::middleware('auth')->prefix('seller')->group(function () {
     Route::get('stores', [StoreController::class, 'index'])->name('seller.stores.index'); // Blade View
     Route::post('stores', [StoreController::class, 'store'])->name('seller.stores.store');
     Route::get('stores/{id}', [StoreController::class, 'show'])->name('seller.stores.show');

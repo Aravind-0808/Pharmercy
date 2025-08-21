@@ -14,19 +14,33 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($storeWallets as $wallet)
-                <tr>
-                    <td>{{ $wallet->store_id }}</td>
-                    <td>{{ $wallet->store->name ?? 'N/A' }}</td>
-                    <td>₹{{ number_format($wallet->total_amount, 2) }}</td>
-                    <td>
-                        <a href="/" 
-                           class="btn btn-sm btn-info">
-                           View Transactions
-                        </a>
-                    </td>
-                </tr>
-            @endforeach
+           @if (count($storeWallets) > 0)
+               @foreach($storeWallets as $wallet)
+                   <tr>
+                       <td>{{ $wallet->store_id }}</td>
+                       <td>{{ $wallet->store->name ?? 'N/A' }}</td>
+                       @if ($wallet->total_balance >= 0)
+                       <td class="text-success">₹{{ number_format($wallet->total_balance, 2) }}</td>
+                       @endif
+                       @if ($wallet->total_balance < 0)
+                           <td class="text-danger">₹{{ number_format($wallet->total_balance, 2) }}</td>
+                       @endif
+                       <td>
+                           <a href="/" 
+                              class="btn btn-sm btn-info">
+                              View Transactions
+                           </a>
+                       </td>
+                   </tr>
+               @endforeach
+           @endif
+           @if (count($storeWallets) === 0)
+               <tfoot>
+                   <tr>
+                       <td colspan="4" class="text-center">No store wallets found.</td>
+                   </tr>
+               </tfoot>
+           @endif
         </tbody>
     </table>
 </div>

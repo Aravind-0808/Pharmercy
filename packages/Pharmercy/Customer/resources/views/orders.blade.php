@@ -17,6 +17,7 @@
                                         <th>Product</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
+                                        <th>Payment Type</th>
                                         <th>Total</th>
                                         <th>Status</th>
                                         <th>Order Date</th>
@@ -24,63 +25,92 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($orders as $order)
+                                    @if (count($orders) > 0)
+                                        @foreach($orders as $order)
+                                            <tr>
+                                                <td class="fw-bold">
+                                                    # {{ $order->id }}
+                                                </td>
+                                                <td class="fw-semibold">{{ $order->product->name }}</td>
+                                                <td class="text-success fw-bold">
+                                                    ₹{{ number_format($order->product->selling_price, 2) }}</td>
+                                                <td>{{ $order->quantity }}</td>
+                                                <th>
+                                                    @if($order->payment_type == 1)
+                                                        <span class="badge bg-primary">Razorpay</span>
+                                                    @elseif($order->payment_type == 2)
+                                                        <span class="badge bg-success">Wallet</span>
+                                                    @elseif($order->payment_type == 3)
+                                                        <span class="badge bg-warning">COD</span>
+                                                    @endif
+                                                </th>
+                                                <td class="fw-bold">
+                                                    ₹{{ number_format($order->total_amount, 2) }}</td>
+                                                <td>
+                                                    @if($order->status == 'pending')
+                                                        <span class="text-danger d-flex align-items-center">
+                                                            <i class="fas fa-times-circle me-2"></i> Pending
+                                                        </span>
+                                                    @elseif ($order->status == 'paid')
+                                                        <span class="text-secondary d-flex align-items-center">
+                                                              <i class="fas fa-check-circle me-2"></i> Paid
+                                                        </span>
+                                                    @elseif ($order->status == 'confirmed')
+                                                        <span class="text-success d-flex align-items-center">
+                                                            <i class="fas fa-check-circle me-2"></i> Confirmed
+                                                        </span>
+                                                    @elseif ($order->status == 'delivered')
+                                                        <span class="text-success d-flex align-items-center">
+                                                            <i class="fas fa-check-circle me-2"></i> Delivered
+                                                        </span>
+                                                    @elseif ($order->status == 'cancelled')
+                                                        <span class="text-danger d-flex align-items-center">
+                                                            <i class="fas fa-times-circle me-2"></i> Cancelled
+                                                        </span>
+                                                    @else
+                                                        <span class="text-secondary d-flex align-items-center">
+                                                            <i class="fas fa-info-circle me-2"></i> {{ ucfirst($order->status) }}
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td>{{ \Carbon\Carbon::parse($order->ordered_at)->format('d M Y') }}</td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <a href="#" class="text-dark" data-bs-toggle="dropdown">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu">
+                                                            @if ($order->status == 'paid' || $order->status == 'processing')
+                                                                <li>
+                                                                    <form action="{{ $order->payment_type == 3 ? route('customer.orders.cancel.cod', $order->id) : route('customer.orders.cancel', $order->id) }}" method="POST" class="mb-0">
+                                                                        @csrf
+                                                                        <button type="submit" class="dropdown-item text-danger">
+                                                                            Cancel Order
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                            @endif
+
+                                                            @if ($order->status == 'pending')
+                                                                <li>
+                                                                    <a class="dropdown-item text-danger" href="{{ route('payment.initiate', $order->id) }}">
+                                                                        Complete Payment
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
+                                                </td>
+
+
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    @if (count($orders) === 0)
                                         <tr>
-                                            <td class="fw-bold">
-                                                # {{ $order->id }}
-                                            </td>
-                                            <td class="fw-semibold">{{ $order->product->name }}</td>
-                                            <td class="text-success fw-bold">
-                                                ₹{{ number_format($order->product->selling_price, 2) }}</td>
-                                            <td>{{ $order->quantity }}</td>
-                                            <td class="fw-bold">
-                                                ₹{{ number_format($order->total_amount, 2) }}</td>
-                                            <td>
-                                                @if($order->status == 'pending')
-                                                   <span class="text-danger d-flex align-items-center">
-                                                        <i class="fas fa-times-circle me-2"></i> Pending
-                                                    </span>
-                                                @elseif ($order->status == 'paid')
-                                                    <span class="text-success d-flex align-items-center">
-                                                        <i class="fas fa-check-circle me-2"></i> Paid
-                                                    </span>
-                                                @elseif ($order->status == 'cancelled')
-                                                    <span class="text-danger d-flex align-items-center">
-                                                        <i class="fas fa-times-circle me-2"></i> Cancelled
-                                                    </span>
-                                                @else
-                                                    <span class="text-secondary d-flex align-items-center">
-                                                        <i class="fas fa-info-circle me-2"></i> {{ ucfirst($order->status) }}
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td>{{ \Carbon\Carbon::parse($order->ordered_at)->format('d M Y') }}</td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a href="#" class="text-dark" data-bs-toggle="dropdown">
-                                                        <i class="fas fa-ellipsis-v"></i>
-                                                    </a>
-                                                    <ul class="dropdown-menu">
-                                                        @if($order->status == 'paid')
-                                                            <li>
-                                                                <form action="{{ route('customer.orders.cancel', $order->id) }}" method="POST" class="mb-0">
-                                                                    @csrf
-                                                                    <button type="submit" class="dropdown-item text-danger">
-                                                                    Cancel Order
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                        @endif
-                                                        @if ($order->status == 'pending')
-                                                            <li><a class="dropdown-item text-danger" href="{{ route('payment.initiate', $order->id) }}">Complete Payment</a></li>
-                                                        @endif
-                                                    </ul>
-                                                </div>
-                                            </td>
-
-
+                                            <td colspan="9" class="text-center">No orders found.</td>
                                         </tr>
-                                    @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
