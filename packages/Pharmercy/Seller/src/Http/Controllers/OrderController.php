@@ -40,6 +40,7 @@ class OrderController
                 'store_id' => $order->store_id,
                 'amount' => $order->total_amount - ($order->total_amount * 0.7),
                 'type' => 'debit',
+                'description' => 'Payment deducted for order ID: ' . $order->id
             ]);
 
         }

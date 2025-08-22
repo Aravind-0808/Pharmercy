@@ -75,6 +75,7 @@ class PaymentController
                 'transaction_id' => $transaction->id,
                 'amount' => $walletAmount,
                 'type' => 'credit',
+                'description' => 'Payment received for order ID: ' . $order->id
             ]);
 
             // Return the success view directly

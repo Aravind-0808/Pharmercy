@@ -16,6 +16,7 @@ class Wallet extends Model
         'transaction_id',
         'amount',
         'type',
+        'description'
     ];
 
     public function store()

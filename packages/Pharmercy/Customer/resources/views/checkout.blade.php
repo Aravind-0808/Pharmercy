@@ -228,7 +228,7 @@
                         <input type="hidden" name="quantity" value="{{ $quantity }}">
                         <input type="hidden" name="total_amount" value="{{ (float) $product->selling_price * (int) $quantity }}">
                         <input type="hidden" name="status" value="pending">
-                        <input type="hidden" name="payment_type" value="wallet">
+                        <input type="hidden" name="payment_type" value="2">
                         <input type="hidden" name="ordered_at" value="{{ now() }}">
                         <button type="submit" class="btn btn-primary btn-lg mt-3">Pay Now</button>
                     </form>

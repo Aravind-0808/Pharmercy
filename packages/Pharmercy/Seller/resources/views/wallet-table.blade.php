@@ -56,6 +56,7 @@
                     <th>Transaction ID</th>
                     <th>Amount</th>
                     <th>Type</th>
+                    <th>Description</th>
                     <th>Created At</th>
                     <th>Actions</th>
                 </tr>
@@ -65,9 +66,10 @@
                     @foreach($walletTransactions as $transaction)
                         <tr data-id="{{ $transaction->id }}">
                             <td>{{ $transaction->id }}</td>
-                            <td>{{ $transaction->transaction_id ? $transaction->transaction_id : 'Null' }}</td>
+                            <td>{{ $transaction->transaction_id ?? 'Null' }}</td>
                             <td>{{ number_format($transaction->amount, 2) }}</td>
                             <td>{{ ucfirst($transaction->type) }}</td>
+                            <td>{{ $transaction->description }}</td>
                             <td>{{ $transaction->created_at->format('Y-m-d H:i') }}</td>
                             <td>
                                 <form action="/" method="POST" style="display:inline-block;">

@@ -49,7 +49,7 @@
                         <h3 class="product-title">HealthPlus Pharmacy</h3>
                         <strong class="product-price">Chennai, Tamil Nadu</strong>
                         <span class="icon-cross">
-                            <img src="images/cross.svg" class="img-fluid">
+                            <img src="images/right-arrow-svgrepo-com.svg" class="img-fluid">
                         </span>
                     </a>
                 </div>
@@ -63,7 +63,7 @@
                         <h3 class="product-title">CityMeds Store</h3>
                         <strong class="product-price">Bangalore, Karnataka</strong>
                         <span class="icon-cross">
-                            <img src="images/cross.svg" class="img-fluid">
+                            <img src="images/right-arrow-svgrepo-com.svg" class="img-fluid">
                         </span>
                     </a>
                 </div>
@@ -77,7 +77,7 @@
                         <h3 class="product-title">MedCare Pharmacy</h3>
                         <strong class="product-price">Hyderabad, Telangana</strong>
                         <span class="icon-cross">
-                            <img src="images/cross.svg" class="img-fluid">
+                            <img src="images/right-arrow-svgrepo-com.svg" class="img-fluid">
                         </span>
                     </a>
                 </div>

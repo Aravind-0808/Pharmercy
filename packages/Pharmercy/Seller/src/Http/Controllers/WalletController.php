@@ -61,6 +61,7 @@ class WalletController
                 'store_id' => $storeId,
                 'amount' => $request->amount,
                 'type' => 'debit',
+                'description' => 'Withdrawal for order ID: ' . $withdrawal->id
             ]);
 
             return back()->with('success', 'Withdrawal request submitted successfully.');
