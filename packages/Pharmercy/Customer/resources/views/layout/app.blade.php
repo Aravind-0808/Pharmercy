@@ -59,7 +59,8 @@
                                 alt="User"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('customer.cart') }}"><img src="/images/cart.svg" alt="Cart"></a>
+                        <a class="nav-link" href="{{ route('customer.cart') }}"><img src="/images/cart.svg"
+                                alt="Cart"></a>
                     </li>
                 </ul>
             </div>
@@ -68,19 +69,24 @@
 
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-bottom-nav d-md-none">
-        <a href="{{ route('customer.orders') }}" class="nav-link">
+        <a href="/customer" class="nav-link{{ request()->is('customer') ? ' active' : '' }}">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="{{ route('customer.orders') }}"
+            class="nav-link{{ request()->is('customer/orders') ? ' active' : '' }}">
             <i class="fa-solid fa-bag-shopping"></i>
             <span>Orders</span>
         </a>
-        <a href="/labs" class="nav-link">
+        <a href="/customer/labs" class="nav-link{{ request()->is('customer/labs') ? ' active' : '' }}">
             <i class="fa-solid fa-flask"></i>
             <span>Labs</span>
         </a>
-        <a href="/doctors" class="nav-link">
+        <a href="/customer/doctors" class="nav-link{{ request()->is('customer/doctors') ? ' active' : '' }}">
             <i class="fa-solid fa-user-doctor"></i>
             <span>Doctors</span>
         </a>
-        <a href="/customer/wallet" class="nav-link">
+        <a href="/customer/wallet" class="nav-link{{ request()->is('customer/wallet') ? ' active' : '' }}">
             <i class="fa-solid fa-wallet"></i>
             <span>Wallet</span>
 
@@ -111,6 +117,10 @@
     </main>
 
     <style>
+        body {
+            padding-bottom: 60px;
+        }
+
         .mobile-bottom-nav {
             position: fixed;
             bottom: 0;
@@ -119,8 +129,8 @@
             background: #fff;
             border-top: 1px solid #ddd;
             display: flex;
-            justify-content: space-around;
-            padding: 2px 0;
+            justify-content: center;
+            padding: 2px 5px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
             z-index: 9999;
         }
@@ -131,6 +141,10 @@
             font-size: 12px;
             text-decoration: none;
             flex: 1;
+        }
+
+        .mobile-bottom-nav .nav-link.active {
+            color: #1abc9c !important;
         }
 
         .mobile-bottom-nav .nav-link i {
@@ -160,9 +174,59 @@
         }
     </style>
     <!-- Bootstrap Bundle with Popper -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Only run on mobile devices
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
 
+        if (isMobile()) {
+            let modalShown = false;
+            window.history.pushState({ page: 1 }, "", "");
+            window.addEventListener("popstate", function (event) {
+                if (!modalShown) {
+                    var myModal = new bootstrap.Modal(document.getElementById('backConfirmModal'));
+                    myModal.show();
+                    window.history.pushState({ page: 1 }, "", "");
+                    modalShown = true;
+                }
+            });
+            document.getElementById('closeAppBtn').onclick = function () {
+                // Try to close the app (works in some webviews)
+                window.close();
+            };
+            document.getElementById('stayBtn').onclick = function () {
+                var myModal = bootstrap.Modal.getInstance(document.getElementById('backConfirmModal'));
+                myModal.hide();
+                modalShown = false;
+            };
+        }
+    </script>
 
+    <!-- Modal HTML -->
+    <div class="modal fade" id="backConfirmModal" tabindex="-1" aria-labelledby="backConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px;">
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title" id="backConfirmModalLabel" style="color: #1abc9c; font-weight: 600;">Exit
+                        App?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="font-size: 16px; color: #333;">
+                    Are you sure you want to close the app?
+                </div>
+                <div class="modal-footer" style="border-top: none; justify-content: center;">
+                    <button type="button" class="btn btn-outline-secondary" id="stayBtn"
+                        style="border-radius: 8px;">Stay</button>
+                    <button type="button" class="btn btn-success" id="closeAppBtn"
+                        style="background: #1abc9c; border-radius: 8px; border: none;">Close App</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

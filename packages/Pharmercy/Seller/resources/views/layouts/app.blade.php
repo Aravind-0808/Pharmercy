@@ -208,6 +208,20 @@
                                 <p>Withdrawal Requests</p>
                             </a>
                         </li>
+                        <!-- Doctors Management -->
+                        <li class="nav-item">
+                            <a href="{{ route('seller.doctors.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-user-md"></i>
+                                <p>Doctors Management</p>
+                            </a>
+                        </li>
+                        <!-- Labs Management -->
+                        <li class="nav-item">
+                            <a href="{{ route('seller.labs.index') }}" class="nav-link">
+                                <i class="nav-icon fas fa-flask"></i>
+                                <p>Labs Management</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>

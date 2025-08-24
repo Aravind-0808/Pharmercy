@@ -34,7 +34,7 @@
                                                 <td class="text-success fw-bold">₹{{ $item->product->selling_price }}</td>
                                                 <td class="text">{{ $item->quantity }}</td>
                                                 <td class="fw-bold">
-                                                   ₹{{ $item->product->selling_price * $item->quantity }}
+                                                    ₹{{ $item->product->selling_price * $item->quantity }}
                                                 </td>
                                                 <td>
                                                     <form action="{{ route('customer.cart.destroy', $item->id) }}" method="POST">
@@ -78,28 +78,17 @@
                             <h5 class="fw-bold mb-4">Cart Totals</h5>
 
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal</span>
-                                <strong>${{ number_format($cart->sum(fn($i) => $i->product->price * $i->quantity), 2) }}</strong>
+                                <span>Total Products</span>
+                                <strong>{{ count($cart) }}</strong>
                             </div>
 
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Shipping</span>
-                                <strong>$10.00</strong>
+                                <span>Total Amount</span>
+                                <strong class="text-success"> ₹{{ $cart->sum(fn($item) => $item->product->selling_price * $item->quantity) }}</strong>
                             </div>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Tax (5%)</span>
-                                <strong>
-                                    ${{ number_format(($cart->sum(fn($i) => $i->product->price * $i->quantity)) * 0.05, 2) }}
-                                </strong>
-                            </div>
-
                             <div class="d-flex justify-content-between mb-4 border-top pt-2">
-                                <span>Total</span>
-                                <strong class="text-success fs-5">
-                                    ${{ number_format($cart->sum(fn($i) => $i->product->price * $i->quantity) + 10 +
-                (($cart->sum(fn($i) => $i->product->price * $i->quantity)) * 0.05), 2) }}
-                                </strong>
+                                <span>Average Order Value</span>
+                                <strong> ₹{{ number_format($cart->avg(fn($item) => $item->product->selling_price * $item->quantity), 2) }}</strong>
                             </div>
                             <form action="{{ route('customer.cart-order') }}" method="POST">
                                 @csrf

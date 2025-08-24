@@ -32,7 +32,7 @@ class ProductsController
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'description' => 'required|string',
             'original_price' => 'required|numeric',
             'discount' => 'required|numeric',

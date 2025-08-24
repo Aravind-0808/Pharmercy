@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Pharmercy\Customer\Models\Orders;
 use Pharmercy\Customer\Models\Transaction;
 use Pharmercy\Seller\Models\BankDetails;
+use Pharmercy\Seller\Models\Doctors;
+use Pharmercy\Seller\Models\Labs;
 use Pharmercy\Seller\Models\Products;
 use Pharmercy\Seller\Models\Stores;
 use Pharmercy\Seller\Models\Wallet;
@@ -135,6 +137,26 @@ class AdminController
     {
         $bankDetails = BankDetails::all();
         return response()->view('admin::bank-details', compact('bankDetails'));
+    }
+
+    public function labTable(): Response
+    {
+        $user = Auth::user();
+        $labs = Labs::all();
+        if (!$user || $user->role_id !== 3) {
+            return abort(401, 'Unauthorized Access');
+        }
+        return response()->view('admin::labs-table', compact('labs'));
+    }
+
+    public function doctorTable(): Response
+    {
+        $user = Auth::user();
+        $doctors = Doctors::all();
+        if (!$user || $user->role_id !== 3) {
+            return abort(401, 'Unauthorized Access');
+        }
+        return response()->view('admin::doctors-table', compact('doctors'));
     }
 
 }

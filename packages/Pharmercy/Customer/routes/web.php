@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Pharmercy\Customer\Http\Controllers\AddressesController;
 use Pharmercy\Customer\Http\Controllers\CartController;
 use Pharmercy\Customer\Http\Controllers\CustomerController;
+use Pharmercy\Customer\Http\Controllers\DoctorsController;
+use Pharmercy\Customer\Http\Controllers\LabController;
 use Pharmercy\Customer\Http\Controllers\OrdersController;
 use Pharmercy\Customer\Http\Controllers\PaymentController;
 use Pharmercy\Customer\Http\Controllers\ProfileController;
@@ -19,6 +21,9 @@ Route::get('customer/orders', [OrdersController::class, 'index'])->name('custome
 Route::post("/customer/cart-order", [CartController::class, 'cartorder'])->name('customer.cart-order')->middleware('auth'); 
 Route::post('customer/orders-cancel/{id}', [OrdersController::class, 'cancelOrder'])->name('customer.orders.cancel')->middleware('auth');
 Route::post('customer/orders-cancel-cod/{id}', [OrdersController::class, 'cancelcodOrder'])->name('customer.orders.cancel.cod')->middleware('auth');
+
+Route::get('customer/doctors', [DoctorsController::class, 'index'])->name('customer.doctors')->middleware('auth');
+Route::get('customer/labs', [LabController::class, 'index'])->name('customer.labs')->middleware('auth');
 
 Route::get('customer/profile', [ProfileController::class, 'index'])->name('customer.profile')->middleware('auth');
 Route::put('customer/update-address/{id}', [AddressesController::class, 'update'])->name('customer.update-address')->middleware('auth');

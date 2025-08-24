@@ -30,81 +30,82 @@
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="bi bi-geo-alt-fill me-2 text-danger"></i>Address</h5>
-            <button type="button" class="btn btn-sm btn-outline-primary" id="editAddressBtn">
-                <i class="bi bi-pencil-square"></i> Edit
-            </button>
+            @if($profile && ($profile->address ?? $profile->door_no))
+                <button type="button" class="btn btn-sm btn-outline-primary" id="editAddressBtn">
+                    <i class="bi bi-pencil-square"></i> Edit
+                </button>
+            @endif
         </div>
         <div class="card-body">
-            <form action="{{ route('customer.update-address', $profile->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">First Name</label>
-                        <input type="text" name="first_name" value="{{ $profile->first_name }}" class="form-control" required readonly>
+            @if($profile && ($profile->address ?? $profile->door_no))
+                <form action="{{ route('customer.update-address', $profile->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" value="{{ $profile->first_name }}" class="form-control" required readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" value="{{ $profile->last_name }}" class="form-control" required readonly>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" name="last_name" value="{{ $profile->last_name }}" class="form-control" required readonly>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" value="{{ $profile->phone }}" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Alternate Phone Number</label>
+                            <input type="text" name="alt_phone" value="{{ $profile->alt_phone }}" class="form-control" required readonly>
+                        </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Door Number</label>
+                            <input type="text" name="door_no" value="{{ $profile->door_no }}" class="form-control" required readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Street</label>
+                            <input type="text" name="street" value="{{ $profile->street }}" class="form-control" required readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" value="{{ $profile->city }}" class="form-control" required readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">District</label>
+                            <input type="text" name="district" value="{{ $profile->district }}" class="form-control" required readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">State</label>
+                            <input type="text" name="state" value="{{ $profile->state }}" class="form-control" required readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Country</label>
+                            <input type="text" name="country" value="{{ $profile->country }}" class="form-control" required readonly>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Zip Code</label>
+                            <input type="text" name="zip" value="{{ $profile->zip }}" class="form-control" required readonly>
+                        </div>
+                    </div>
+                    <div class="d-none" id="addressSaveBtn">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            @else
+                <div class="alert alert-info mb-3">
+                    No address were found. you can add address in product checkout page.
                 </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Phone Number</label>
-                        <input type="text" value="{{ $profile->phone }}" class="form-control" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Alternate Phone Number</label>
-                        <input type="text" name="alt_phone" value="{{ $profile->alt_phone }}" class="form-control" required readonly>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Door Number</label>
-                        <input type="text" name="door_no" value="{{ $profile->door_no }}" class="form-control" required readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Street</label>
-                        <input type="text" name="street" value="{{ $profile->street }}" class="form-control" required readonly>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">City</label>
-                        <input type="text" name="city" value="{{ $profile->city }}" class="form-control" required readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">District</label>
-                        <input type="text" name="district" value="{{ $profile->district }}" class="form-control" required readonly>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">State</label>
-                        <input type="text" name="state" value="{{ $profile->state }}" class="form-control" required readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Country</label>
-                        <input type="text" name="country" value="{{ $profile->country }}" class="form-control" required readonly>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <label class="form-label">Zip Code</label>
-                        <input type="text" name="zip" value="{{ $profile->zip }}" class="form-control" required readonly>
-                    </div>
-                </div>
-
-                <div class="d-none" id="addressSaveBtn">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
+            @endif
         </div>
     </div>
 

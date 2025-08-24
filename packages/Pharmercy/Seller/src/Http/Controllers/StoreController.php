@@ -22,7 +22,7 @@ class StoreController
     $validated = $request->validate([
         'user_id' => 'required|exists:users,id',
         'name' => 'required|string|max:255',
-        'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         'address' => 'required|string|unique:stores,address',
         'country' => 'required|string',
         'state' => 'required|string',

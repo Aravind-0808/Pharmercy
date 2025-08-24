@@ -60,7 +60,7 @@
                             </a>
                         </div>
                     @empty
-                        <div class="col-12 text-center">
+                        <div class="col-12 text-center mt-5">
                             <p>No products found.</p>
                         </div>
                     @endforelse

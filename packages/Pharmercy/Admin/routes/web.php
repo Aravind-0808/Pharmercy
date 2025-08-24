@@ -14,3 +14,5 @@ Route::get('/admin/order-table', [AdminController::class, 'orderTable'])->name('
 Route::get('/admin/withdrawal-request', [AdminController::class, 'withdrawalRequest'])->name('admin.withdrawal.request')->middleware('auth');
 Route::put('admin/withdrawal-request/{id}', [AdminController::class, 'updateStatus'])->name('admin.withdrawal.update');
 Route::get('/admin/bank-details', [AdminController::class, 'showBankDetails'])->name('admin.bank.details')->middleware('auth');
+Route::get('/admin/labs-table', [AdminController::class, 'labTable'])->name('admin.labs.table')->middleware('auth');
+Route::get('/admin/doctors-table', [AdminController::class, 'doctorTable'])->name('admin.doctors.table')->middleware('auth');

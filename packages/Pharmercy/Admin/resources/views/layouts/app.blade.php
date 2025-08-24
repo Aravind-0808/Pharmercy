@@ -223,6 +223,18 @@
                                 <p>Bank Details</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.doctors.table') }}" class="nav-link">
+                                <i class="nav-icon fas fa-user-md"></i>
+                                <p>Doctors Management</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.labs.table') }}" class="nav-link">
+                                <i class="nav-icon fas fa-vials"></i>
+                                <p>Labs Management</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>

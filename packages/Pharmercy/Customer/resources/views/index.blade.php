@@ -89,32 +89,38 @@
 
             <div class="container">
                 <div class="row">
-                    @foreach($stores as $store)
-                        <div class="col-6 col-md-4 col-lg-3 mb-2">
-                            <a class="product-item" href="{{ url('/products/' . $store->id) }}">
-                                <div class="image-container mb-3">
-                                    <img src="{{ asset($store->logo) }}" class="img-fluid product-thumbnail rounded"
-                                        alt="{{ $store->name }}">
-                                </div>
-                                <h3 class="product-title mt-3">{{ $store->name }}</h3>
-                                <p class="product-address text-muted mb-1">
-                                    <i class="bi bi-geo-alt-fill me-1"></i>
-                                    {{ $store->address }}, {{ $store->city }}, {{ $store->state }}, {{ $store->country }}
-                                </p>
-                                <div class="product-rating text-warning mb-2">
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star-fill"></i>
-                                    <i class="bi bi-star"></i>
-                                    <i class="bi bi-star"></i>
-                                    <span class="text-muted">(4.0/5)</span> {{-- Optional: dynamic rating --}}
-                                </div>
-                                <span class="icon-cross">
-                                    <img src="{{ asset('images/right-arrow-svgrepo-com.svg') }}" class="img-fluid">
-                                </span>
-                            </a>
+                    @if(count($stores) > 0)
+                        @foreach($stores as $store)
+                            <div class="col-6 col-md-4 col-lg-3 mb-2">
+                                <a class="product-item" href="{{ url('/products/' . $store->id) }}">
+                                    <div class="image-container mb-3">
+                                        <img src="{{ asset($store->logo) }}" class="img-fluid product-thumbnail rounded"
+                                            alt="{{ $store->name }}">
+                                    </div>
+                                    <h3 class="product-title mt-3">{{ $store->name }}</h3>
+                                    <p class="product-address text-muted mb-1">
+                                        <i class="bi bi-geo-alt-fill me-1"></i>
+                                        {{ $store->address }}, {{ $store->city }}, {{ $store->state }}, {{ $store->country }}
+                                    </p>
+                                    <div class="product-rating text-warning mb-2">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                        <i class="bi bi-star"></i>
+                                        <span class="text-muted">(4.0/5)</span> {{-- Optional: dynamic rating --}}
+                                    </div>
+                                    <span class="icon-cross">
+                                        <img src="{{ asset('images/right-arrow-svgrepo-com.svg') }}" class="img-fluid">
+                                    </span>
+                                </a>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="col-12 text-center py-5">
+                            <h4 class="text-muted">No stores were found.</h4>
                         </div>
-                    @endforeach
+                    @endif
                 </div>
             </div>
 

@@ -34,7 +34,12 @@
                                     <span class="text-muted">No Image</span>
                                 @endif
                             </td>
-                            <td>{{ $product->description }}</td>
+                            <td>
+                            <td>
+                                <div>{!! $product->description !!}</div>
+                            </td>
+
+                            </td>
                             <td>{{ $product->original_price }}</td>
                             <td>{{ $product->discount }}%</td>
                             <td>{{ $product->stock }}</td>

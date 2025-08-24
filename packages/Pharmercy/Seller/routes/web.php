@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use Pharmercy\Seller\Http\Controllers\DoctorsController;
+use Pharmercy\Seller\Http\Controllers\LabsController;
 use Pharmercy\Seller\Http\Controllers\OrderController;
 use Pharmercy\Seller\Http\Controllers\ProductsController;
 use Pharmercy\Seller\Http\Controllers\SellerController;
@@ -24,6 +26,13 @@ Route::get('/seller/withdrawal-request-table', [WalletController::class, 'getWit
 Route::post("/seller/add-bank-details", [StoreBankDetailsController::class, 'store'])->name('seller.add.bank.details')->middleware('auth');
 Route::put("/seller/update-bank-details/{id}", [StoreBankDetailsController::class, 'update'])->name('seller.update.bank.details')->middleware('auth');
 
+Route::get('/seller/doctors', [DoctorsController::class, 'index'])->name('seller.doctors.index')->middleware('auth');
+Route::post('/seller/doctors', [DoctorsController::class, 'store'])->name('seller.doctors.store')->middleware('auth');
+
+Route::get('/seller/labs', [LabsController::class, 'index'])->name('seller.labs.index')->middleware('auth');
+Route::post('/seller/labs', [LabsController::class, 'store'])->name('seller.labs.store')->middleware('auth');
+Route::put('/seller/labs/{id}', [LabsController::class, 'update'])->name('seller.labs.update')->middleware('auth');
+Route::delete('/seller/labs/{id}', [LabsController::class, 'destroy'])->name('seller.labs.destroy')->middleware('auth');
 
 // Store CRUD routes
 Route::middleware('auth')->prefix('seller')->group(function () {

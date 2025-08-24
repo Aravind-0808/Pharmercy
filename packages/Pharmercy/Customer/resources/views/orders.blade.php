@@ -126,22 +126,17 @@
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Total Orders</span>
-                            <strong>8</strong>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Total Items Purchased</span>
-                            <strong>24</strong>
+                            <strong>{{ count($orders) }}</strong>
                         </div>
 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Total Amount Spent</span>
-                            <strong class="text-success">$1,520.00</strong>
+                            <strong class="text-success">${{ number_format($orders->sum('total_amount'), 2) }}</strong>
                         </div>
 
                         <div class="d-flex justify-content-between mb-4 border-top pt-2">
                             <span>Average Order Value</span>
-                            <strong>$190.00</strong>
+                            <strong>${{ number_format($orders->avg('total_amount'), 2) }}</strong>
                         </div>
                     </div>
                 </div>
